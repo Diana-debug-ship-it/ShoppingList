@@ -10,9 +10,9 @@ public class ShopItem {
     private String name;
     private int count;
     private boolean enabled;
-    private int id;
+    private Integer id;
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -28,7 +28,7 @@ public class ShopItem {
         return enabled;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -38,6 +38,7 @@ public class ShopItem {
         this.enabled = enabled;
         this.id = UNDEFINED_ID;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -61,4 +62,6 @@ public class ShopItem {
                 ", id=" + id +
                 '}';
     }
+
+
 }

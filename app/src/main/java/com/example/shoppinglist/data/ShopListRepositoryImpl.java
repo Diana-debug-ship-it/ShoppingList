@@ -11,8 +11,14 @@ import com.example.shoppinglist.domain.ShopItem;
 import com.example.shoppinglist.domain.ShopListRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import kotlin.random.Random;
 
 public class ShopListRepositoryImpl implements ShopListRepository {
 
@@ -25,7 +31,7 @@ public class ShopListRepositoryImpl implements ShopListRepository {
         return instance;
     }
 
-    private List<ShopItem> shopList = new ArrayList<>();
+    private Set<ShopItem> shopList = new TreeSet<>((Comparator.comparing(ShopItem::getId)));
 
     private MutableLiveData<List<ShopItem>> shopListLD = new MutableLiveData<>();
 
@@ -33,14 +39,14 @@ public class ShopListRepositoryImpl implements ShopListRepository {
 
     {
         for (int i=0; i<10; i++) {
-            ShopItem item = new ShopItem("Name"+i, i, true);
+            ShopItem item = new ShopItem("Name"+i, i, Random.Default.nextBoolean());
             addShopItem(item);
         }
     }
 
     @Override
     public void addShopItem(ShopItem shopItem) {
-        if (shopItem.getId() == UNDEFINED_ID) {
+        if (shopItem.getId().equals(UNDEFINED_ID)) {
             shopItem.setId(autoIncrementId++);
         }
         shopList.add(shopItem);
@@ -61,8 +67,8 @@ public class ShopListRepositoryImpl implements ShopListRepository {
     }
 
     @Override
-    public ShopItem getShopItem(int id) {
-        Optional<ShopItem> temp = shopList.stream().filter(shopItem -> shopItem.getId()==id)
+    public ShopItem getShopItem(Integer id) {
+        Optional<ShopItem> temp = shopList.stream().filter(shopItem -> shopItem.getId().equals(id))
                 .findFirst();
         if (temp.isPresent()) return temp.get();
         else throw new RuntimeException(String.format("Element with %d not found", id));
@@ -74,6 +80,6 @@ public class ShopListRepositoryImpl implements ShopListRepository {
     }
 
     private void updateList(){
-        shopListLD.setValue(shopList.subList(0, shopList.size()));
+        shopListLD.setValue(new ArrayList<>(shopList));
     }
 }

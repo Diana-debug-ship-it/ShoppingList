@@ -12,7 +12,7 @@ public interface ShopListRepository {
 
     public void editShopItem(ShopItem shopItem);
 
-    public ShopItem getShopItem(int id);
+    public ShopItem getShopItem(Integer id);
 
     public LiveData<List<ShopItem>> getShopList();
 }
