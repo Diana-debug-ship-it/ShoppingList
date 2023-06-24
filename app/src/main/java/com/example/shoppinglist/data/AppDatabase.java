@@ -12,13 +12,15 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance = null;
     public static final String DB_NAME = "shop_item.db";
 
-    public static AppDatabase getInstance(Application application){
-        if (instance==null) {
+    public static AppDatabase getInstance(Application application) {
+        if (instance == null) {
             instance = Room.databaseBuilder(
                     application,
                     AppDatabase.class,
                     DB_NAME
-            ).build();
+            )
+                    .allowMainThreadQueries()
+                    .build();
         }
         return instance;
     }

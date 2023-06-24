@@ -19,7 +19,6 @@ public class ShopItemDbModel {
         this.name = name;
         this.count = count;
         this.enabled = enabled;
-        this.id = UNDEFINED_ID;
     }
 
     public String getName() {

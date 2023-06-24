@@ -2,8 +2,6 @@ package com.example.shoppinglist.domain;
 
 import static com.example.shoppinglist.Constants.UNDEFINED_ID;
 
-import com.example.shoppinglist.Constants;
-
 import java.util.Objects;
 
 public class ShopItem {
@@ -36,7 +34,6 @@ public class ShopItem {
         this.name = name;
         this.count = count;
         this.enabled = enabled;
-        this.id = UNDEFINED_ID;
     }
 
 

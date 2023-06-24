@@ -1,5 +1,7 @@
 package com.example.shoppinglist.data;
 
+import static com.example.shoppinglist.Constants.UNDEFINED_ID;
+
 import com.example.shoppinglist.domain.ShopItem;
 
 import java.util.ArrayList;
@@ -7,12 +9,14 @@ import java.util.List;
 
 public class ShopListMapper {
     public ShopItemDbModel mapEntityToDbModel(ShopItem shopItem){
-        ShopItemDbModel itemDbModel = new ShopItemDbModel(
+        ShopItemDbModel item =  new ShopItemDbModel(
                 shopItem.getName(),
                 shopItem.getCount(),
                 shopItem.isEnabled());
-        itemDbModel.setId(shopItem.getId());
-        return itemDbModel;
+        if (shopItem.getId() != UNDEFINED_ID) {
+            item.setId(shopItem.getId());
+        }
+        return item;
     }
 
     public ShopItem mapDbModelToEntity(ShopItemDbModel item){

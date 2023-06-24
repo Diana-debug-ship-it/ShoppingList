@@ -1,7 +1,7 @@
 package com.example.shoppinglist;
 
 public class Constants {
-    public static final Integer UNDEFINED_ID = -1;
+    public static final Integer UNDEFINED_ID = 0;
 
     public static final int STATE_ENABLED = 101;
     public static final int STATE_DISABLED = 100;
