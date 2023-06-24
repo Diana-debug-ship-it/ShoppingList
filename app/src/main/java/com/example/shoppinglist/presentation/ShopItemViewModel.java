@@ -1,5 +1,9 @@
 package com.example.shoppinglist.presentation;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,9 +14,9 @@ import com.example.shoppinglist.domain.EditShopItemUseCase;
 import com.example.shoppinglist.domain.GetShopItemUseCase;
 import com.example.shoppinglist.domain.ShopItem;
 
-public class ShopItemViewModel extends ViewModel {
+public class ShopItemViewModel extends AndroidViewModel {
 
-    private ShopListRepositoryImpl repository = ShopListRepositoryImpl.getInstance();
+    private ShopListRepositoryImpl repository = ShopListRepositoryImpl.getInstance(getApplication());
 
     private GetShopItemUseCase getShopItemUseCase = new GetShopItemUseCase(repository);
     private AddShopItemUseCase addShopItemUseCase = new AddShopItemUseCase(repository);
@@ -22,6 +26,10 @@ public class ShopItemViewModel extends ViewModel {
     private MutableLiveData<Boolean> errorInputCount = new MutableLiveData<>();
     private MutableLiveData<ShopItem> shopItemLD = new MutableLiveData<>();
     private MutableLiveData<Object> isFinished = new MutableLiveData<>();
+
+    public ShopItemViewModel(@NonNull Application application) {
+        super(application);
+    }
 
     public LiveData<Object> getIsFinished() {
         return isFinished;

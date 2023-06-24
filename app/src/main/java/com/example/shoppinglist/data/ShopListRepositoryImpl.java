@@ -5,7 +5,10 @@ import static com.example.shoppinglist.Constants.UNDEFINED_ID;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 
 import com.example.shoppinglist.domain.ShopItem;
 import com.example.shoppinglist.domain.ShopListRepository;
@@ -22,64 +25,46 @@ import kotlin.random.Random;
 
 public class ShopListRepositoryImpl implements ShopListRepository {
 
+    private static ShopListDao shopListDao;
+    private ShopListMapper mapper = new ShopListMapper();
     private static ShopListRepositoryImpl instance = null;
 
-    public static ShopListRepositoryImpl getInstance() {
+    public static ShopListRepositoryImpl getInstance(Application application) {
+        shopListDao = AppDatabase.getInstance(application).shopListDao();
         if (instance==null) {
             return new ShopListRepositoryImpl();
         }
         return instance;
     }
 
-    private Set<ShopItem> shopList = new TreeSet<>((Comparator.comparing(ShopItem::getId)));
-
-    private MutableLiveData<List<ShopItem>> shopListLD = new MutableLiveData<>();
-
-    private int autoIncrementId = 0;
-
-    {
-        for (int i=0; i<10; i++) {
-            ShopItem item = new ShopItem("Name"+i, i, Random.Default.nextBoolean());
-            addShopItem(item);
-        }
-    }
-
     @Override
     public void addShopItem(ShopItem shopItem) {
-        if (shopItem.getId().equals(UNDEFINED_ID)) {
-            shopItem.setId(autoIncrementId++);
-        }
-        shopList.add(shopItem);
-        updateList();
+        shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem));
     }
 
     @Override
     public void deleteShopItem(ShopItem shopItem) {
-        shopList.remove(shopItem);
-        updateList();
+        shopListDao.deleteShopItem(shopItem.getId());
     }
 
     @Override
     public void editShopItem(ShopItem shopItem) {
-        ShopItem oldItem = getShopItem(shopItem.getId());
-        shopList.remove(oldItem);
-        addShopItem(shopItem);
+        shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem));
     }
 
     @Override
     public ShopItem getShopItem(Integer id) {
-        Optional<ShopItem> temp = shopList.stream().filter(shopItem -> shopItem.getId().equals(id))
-                .findFirst();
-        if (temp.isPresent()) return temp.get();
-        else throw new RuntimeException(String.format("Element with %d not found", id));
+        ShopItemDbModel item = shopListDao.getShopItem(id);
+        return mapper.mapDbModelToEntity(item);
     }
 
     @Override
     public LiveData<List<ShopItem>> getShopList() {
-        return shopListLD;
-    }
-
-    private void updateList(){
-        shopListLD.setValue(new ArrayList<>(shopList));
+//        MediatorLiveData<List<ShopItem>> mediatorLiveData = new MediatorLiveData<>();
+//        mediatorLiveData.addSource(shopListDao.getShopList(),
+//                value -> mapper.mapListDbModelToListEntity(value));
+//        return mediatorLiveData;
+        return Transformations.map(shopListDao.getShopList(),
+                value -> mapper.mapListDbModelToListEntity(value));
     }
 }

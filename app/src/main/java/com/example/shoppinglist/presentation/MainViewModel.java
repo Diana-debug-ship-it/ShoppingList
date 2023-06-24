@@ -1,5 +1,9 @@
 package com.example.shoppinglist.presentation;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,15 +16,19 @@ import com.example.shoppinglist.domain.ShopItem;
 
 import java.util.List;
 
-public class MainViewModel extends ViewModel {
+public class MainViewModel extends AndroidViewModel {
 
-    private ShopListRepositoryImpl repository = ShopListRepositoryImpl.getInstance();
+    private ShopListRepositoryImpl repository = ShopListRepositoryImpl.getInstance(getApplication());
 
     private GetShopListUseCase getShopListUseCase = new GetShopListUseCase(repository);
     private DeleteItemUseCase deleteItemUseCase = new DeleteItemUseCase(repository);
     private EditShopItemUseCase editShopItemUseCase = new EditShopItemUseCase(repository);
 
     private LiveData<List<ShopItem>> shopList = getShopListUseCase.getShopList();
+
+    public MainViewModel(@NonNull Application application) {
+        super(application);
+    }
 
     public LiveData<List<ShopItem>> getShopList() {
         return shopList;
